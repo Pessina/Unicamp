@@ -1,11 +1,12 @@
 import numpy as np
 
-matrix = np.array([ [7, 4, -2, 1, 14.308],
-                    [3, 11, 4, -5, 25.744],
-                    [-2, 3, 8, 2, -3.872],
-                    [10, -5, 1, -3, 36.344]], dtype='f')
+matrix = np.array([ [4, 0, -3, -2],
+                    [1, 2, 2, 3],
+                    [3, -4, 1, 9]], dtype='f')
 
-def triangle_matrix(matrix):
+print(matrix)
+
+def triagle_matrix(matrix):
     for line_base in range(0, len(matrix)-1):
         for line_zero in range(line_base + 1, len(matrix)):
             m = matrix [line_zero][line_base]/matrix[line_base][line_base]
@@ -23,7 +24,8 @@ def calculate_solution(matrix):
         solution.insert(0, x)
     return solution
 
-matrix = triangle_matrix (matrix)
+matrix = triagle_matrix(matrix)
 solution = calculate_solution (matrix)
 
+print (matrix)
 print (solution)
