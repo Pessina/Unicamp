@@ -1,11 +1,11 @@
 import numpy as np
 import copy
 
-matrix = np.array([ [10, 2, 1, 7],
-                    [1, 5, 1, -8],
-                    [2, 3, 10, 6]], dtype='f')
+matrix = np.array([ [4, 3, 1, 1],
+                    [4, 6, 1, 2],
+                    [1, 6, 7, 3]], dtype='f')
 
-x_aproximation = [0.7, -1.6, 0.6]
+x_aproximation = [0, 0, 0]
 
 print (matrix)
 
@@ -41,11 +41,12 @@ def get_diff_x (new_aproximation, old_aproximation):
             max_value = abs(new_aproximation[i] - old_aproximation[i])
     return max_value
 
-def gauss_jacobi(matrix, x, iter, error):
+def gauss_jacobi(matrix, x, iter, error, method):
     i = 0
     while i < iter:
 
-        x_new = next_solution_jacobi(matrix, copy.deepcopy(x))
+        x_new = method(matrix, copy.deepcopy(x))
+        print (x_new)
         if(get_diff_x(x_new, x) < error):
             break
 
@@ -56,4 +57,4 @@ def gauss_jacobi(matrix, x, iter, error):
 
 matrix = create_C_matrix(matrix)
 print (matrix)
-print (gauss_jacobi(matrix, x_aproximation, 3, 10**-5))
+print (gauss_jacobi(matrix, x_aproximation, 3, 10**-5, next_solution_seidel))

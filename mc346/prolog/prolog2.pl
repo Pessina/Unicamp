@@ -14,5 +14,6 @@ getMaxTree(tree(X, AL, AR), Max) :- getMaxTree(AL, Max1), getMaxTree(AR, Max2), 
 getMaxTree(tree(X, AL, AR), Max) :- getMaxTree(AL, Max1), getMaxTree(AR, Max2), Max2 > X, Max is Max2.
 getMaxTree(tree(X, AL, AR), Max) :- getMaxTree(AL, Max1), getMaxTree(AR, Max2), Max is X .
 
-checkABB(tree(X, nil, nil)).
-checkABB(tree(X, AL, AR)) :- getMaxTree(AL, Max), getMinTree(AR, Min), Min >= X, Max < X, checkABB(AL), checkABB(AR).
+checkABB(tree(X, nil, nil), true).
+checkABB(tree(X, AL, AR), P) :- getMaxTree(AL, Max), Max < X, getMinTree(AR, Min), Min >= X,  checkABB(AL, P), checkABB(AR, P).
+checkABB(tree(X, AL, AR), false).
