@@ -3,19 +3,17 @@ main :-
   % read_string(user_input, _, Input),
   toTrechos(
   "xxxxxababababyyyyyy
-yyaaaaaaaaaaa
-yyyyyyeeeeeeeeeeeeee
-cccccccccccccccxxxxx
-fffffffffffffffwwwwww
-wwwwwwgggggggggggxx", Trechos),
+yyyyyyeeeeeeeeeeeeee", Trechos),
   getSegments(Trechos, Trechos, Segments),
 
-  printList(Trechos).
+ printList(Segments).
+
 
 % Print a list
 printList([]).
 printList([X|XS]) :-
-  writeln(user_output, X),
+  % writeln(user_output, X),
+  writeln(X),
   printList(XS).
 
 % Take the string input, and return list of trechos
@@ -30,28 +28,35 @@ getSegments([X|XS], Trechos, Segments) :-
   getXSegments(X, Trechos, MatchList),
   Segments = [MatchList|SegmentsR].
 
-getXSegments(X, [], []).
+getXSegments(_, [], []).
 getXSegments(X, [Y|YS], MatchList) :-
   getXSegments(X, YS, MatchListR),
+  write(X),
+  writeln(Y),
   matchTrecho(X, Y, Segment, 0, Y),
-  Segment != [-1] ->
-    MatchList = [Segment|MatchListR];
-    MatchList = MatchListR.
+  compare(=, SegmentR, [-1]) ->
+    MatchList = MatchListR;
+	MatchList = [Segment|MatchListR].
 
-matchTrecho([], YS, Segment, Acc, YInicio) :-
+matchTrecho([], YS, Segment, Acc, _) :-
   Acc >= 4 ->
     Segment = YS;
     Segment = [-1].
 matchTrecho([X|XS], [Y|YS], Segment, Acc, YInicio) :-
-  X = Y,
-  Acc is Acc + 1,
-  matchTrecho(XS, YS, SegmentR, Acc, YInicio),
-  SegmentR == [-1] ->
-    Segment = [-1];
+  X == Y,
+  AccP is Acc + 1,
+  matchTrecho(XS, YS, SegmentR, AccP, YInicio),
+  write(X),
+  write(" "),
+  write(SegmentR),
+  write(" "),
+  writeln([X|SegmentR]),
+  compare(=, SegmentR, [-1]) ->
+   	Segment = [-1];
     Segment = [X|SegmentR].
-matchTrecho([X|XS], [Y|YS], Segment, Acc, YInicio) :-
-  Acc is 0,
-  matchTrecho(XS, YInicio, SegmentR, Acc, YInicio),
-  SegmentR == [-1] ->
+matchTrecho([X|XS], _, Segment, _, YInicio) :-
+  AccP is 0,
+  matchTrecho(XS, YInicio, SegmentR, AccP, YInicio),
+  compare(=, SegmentR, [-1]) ->
     Segment = [-1];
     Segment = [X|SegmentR].
