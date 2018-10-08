@@ -34,19 +34,19 @@ def next_solution_seidel(matrix, x):
         x[i] = x_line
     return x
 
-def get_diff_x (new_aproximation, old_aproximation):
+def greatest_error (new_aproximation, old_aproximation):
     max_value = float("-inf")
     for i in range (0, len(new_aproximation)):
         if abs(new_aproximation[i] - old_aproximation[i]) > max_value:
             max_value = abs(new_aproximation[i] - old_aproximation[i])
     return max_value
 
-def gauss_jacobi(matrix, x, iter, error):
+def gauss_matrix(matrix, x, iter, error, method):
     i = 0
     while i < iter:
 
-        x_new = next_solution_jacobi(matrix, copy.deepcopy(x))
-        if(get_diff_x(x_new, x) < error):
+        x_new = method(matrix, copy.deepcopy(x))
+        if(greatest_error(x_new, x) < error):
             break
 
         x = x_new
@@ -55,5 +55,4 @@ def gauss_jacobi(matrix, x, iter, error):
     return x
 
 matrix = create_C_matrix(matrix)
-print (matrix)
-print (gauss_jacobi(matrix, x_aproximation, 3, 10**-5))
+print (gauss_matrix(matrix, x_aproximation, 3, 10**-5, next_solution_jacobi))
