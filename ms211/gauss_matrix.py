@@ -1,11 +1,11 @@
 import numpy as np
 import copy
 
-matrix = np.array([ [10, 2, 1, 7],
-                    [1, 5, 1, -8],
-                    [2, 3, 10, 6]], dtype='f')
+matrix = np.array([ [4, 3, 1, 1],
+                    [4, 6, 1, 2],
+                    [1, 6, 7, 3]], dtype='f')
 
-x_aproximation = [0.7, -1.6, 0.6]
+x_aproximation = [0, 0, 0]
 
 print (matrix)
 

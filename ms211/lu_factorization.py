@@ -1,8 +1,8 @@
 import numpy as np
 
-matrix = np.array([ [4, 0, -3, -2],
-                    [1, 2, 2, 3],
-                    [3, -4, 1, 9]], dtype='f')
+matrix = np.array([ [1, 1, 1],
+                    [2, 1, -1],
+                    [3, 2, 0]], dtype='f')
 matrixL = np.zeros((len(matrix), len(matrix)))
 
 print(matrix)
