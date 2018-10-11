@@ -38,3 +38,12 @@ def sublista(lista1, lista2):
 
 def fim_igual_comeco(lista1, lista2):
     return lista1[-4:] == lista2 [:4]
+
+def maior_fim_igual_comeco(lista1, lista2):
+    maxMatch = 0
+    x = 0
+    while (x < len(lista1) or x < len(lista2)):
+        x = x + 1
+        if lista1[-x:] == lista2[:x] and x > maxMatch:
+            maxMatch = x
+    return (maxMatch, maxMatch >= 4)
