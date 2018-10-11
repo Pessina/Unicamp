@@ -20,7 +20,7 @@ def contar_list(lista):
 def maior_valor(dicionario):
     key = None
     maxValue = float("-inf")
-    for k, v in dicionario.iteritems():
+    for k, v in dicionario.items():
         if v > maxValue:
             key = k
             maxValue = v
