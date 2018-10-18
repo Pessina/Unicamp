@@ -72,3 +72,17 @@ matchTrecho([X|XS], _, Segment, _, YInicio) :-
  (SegmentR == [-1] ->
    	Segment = [-1];
     Segment = [X|SegmentR]).
+
+% Match Trecho reversed
+matchTrecho([X|XS], [Y|YS], Segment, Acc, YInicio) :-
+  X == Y,
+  AccP is Acc + 1,
+  matchTrecho(XS, YS, SegmentR, AccP, YInicio),
+  (SegmentR == [-1] ->
+   	Segment = [-1];
+    Segment = SegmentR).
+matchTrecho(XS, _, Segment, Acc, YInicio) :-
+  (Acc >= 4 ->
+  	reverse(XS, XSRev),
+  	append(XSRev, YInicio, Segment);
+   	Segment = [-1]).
