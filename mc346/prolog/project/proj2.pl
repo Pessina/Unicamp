@@ -2,13 +2,9 @@ main :-
   prompt(_, ''),
   % read_string(user_input, _, Input),
   toTrechos(
-  "xyxyxyaaaaabbbbbbbbcccccccccddddddddefefe
-ddddddababababababababababababababababab
-7777uuususususususususususususususususuusuuus
-zzzzz444444444445555555555555555666666677777
-uuusmnmnmnmnmnmnmmmnmnmnmnmn
-xxxxxxxkkkkkkkkkkkkkkkkeeeeeeeee
-efefe1112222222211111122222222ddddddd", Trechos),
+  "xyxyxyaaaaabbbbbbbbcccccccccddddddddefefe1112222222211111122222222ddddddd
+ddddddababababababababababababababababab", Trechos),
+  writeln(Trechos),
   recursiveTrechos(Trechos, TrechosR),
   printList(TrechosR).
 
@@ -27,6 +23,7 @@ recursiveTrechos(Trechos, TrechosR) :-
     	delete(Trechos, XR, TrechosR1),
     	delete(TrechosR1, YR, TrechosR2),
    		append(Segments, TrechosR2, TrechosR3),
+        writeln(TrechosR3),
         recursiveTrechos(TrechosR3, TrechosR)).
 
 % Take the string input, and return list of trechos
@@ -57,6 +54,7 @@ getXSegments(X, [Y|YS], MatchList, XR, YR) :-
       XR = X,
       YR = Y)).
 
+% Fix matchTrecho error when last characters are the same
 matchTrecho([], YS, Segment, Acc, _) :-
   Acc >= 4 ->
     Segment = YS;
