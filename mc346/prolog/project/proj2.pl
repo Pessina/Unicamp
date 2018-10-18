@@ -2,12 +2,13 @@ main :-
   prompt(_, ''),
   % read_string(user_input, _, Input),
   toTrechos(
-  "xxxxxababababyyyyyy
-yyaaaaaaaaaaa
-yyyyyyeeeeeeeeeeeeee
-cccccccccccccccxxxxx
-fffffffffffffffwwwwww
-wwwwwwgggggggggggxx", Trechos),
+  "xyxyxyaaaaabbbbbbbbcccccccccddddddddefefe
+ddddddababababababababababababababababab
+7777uuususususususususususususususususuusuuus
+zzzzz444444444445555555555555555666666677777
+uuusmnmnmnmnmnmnmmmnmnmnmnmn
+xxxxxxxkkkkkkkkkkkkkkkkeeeeeeeee
+efefe1112222222211111122222222ddddddd", Trechos),
   recursiveTrechos(Trechos, TrechosR),
   printList(TrechosR).
 
@@ -20,19 +21,13 @@ printList([X|XS]) :-
 
 % Recursive search for new trechos, until no more trechos can be created
 recursiveTrechos(Trechos, TrechosR) :-
-    length(Trechos, LengthI),
     getSegments(Trechos, Trechos, Segments, XR, YR),
-    (var(XR), var(YR) ->
-    	TrechosR3 = Trechos;
+    (Segments == [] ->
+    	TrechosR = Trechos;
     	delete(Trechos, XR, TrechosR1),
     	delete(TrechosR1, YR, TrechosR2),
-   		append(Segments, TrechosR2, TrechosR3)),
-    length(TrechosR3, LengthF),
-
-    (LengthI =\= LengthF ->
-      recursiveTrechos(TrechosR3, TrechosR);
-      TrechosR = TrechosR3).
-
+   		append(Segments, TrechosR2, TrechosR3),
+        recursiveTrechos(TrechosR3, TrechosR)).
 
 % Take the string input, and return list of trechos
 toTrechos(Input, Trechos) :-
