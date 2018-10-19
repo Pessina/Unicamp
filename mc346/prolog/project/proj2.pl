@@ -46,24 +46,26 @@ getSegments([], _, [], _, _).
 getSegments([X|XS], Trechos, Segments, XR, YR) :-
   getSegments(XS, Trechos, SegmentsR, XR, YR),
   getXSegments(X, Trechos, MatchList, Xr, Yr),
-  ((MatchList == []; SegmentsR \= []) -> % Segments is with element
+  ((MatchList == []; SegmentsR \= []) ->
     Segments = SegmentsR;
    	append(MatchList, SegmentsR, Segments),
     XR = Xr,
     YR = Yr).
 
+%Get combinations for X element from trechos
 getXSegments(_, [], [], _, _).
 getXSegments(X, [Y|YS], MatchList, XR, YR) :-
   getXSegments(X, YS, MatchListR, XR, YR),
   (X == Y ->
   	MatchList = MatchListR;
     matchTrecho(X, Y, Segment, 3, 0),
-    ((Segment == [-1]; MatchListR \= []) -> % Or segment is with element
+    ((Segment == [-1]; MatchListR \= []) ->
       MatchList = MatchListR;
       MatchList = [Segment|MatchListR],
       XR = X,
       YR = Y)).
 
+% Try to make a Segment unifying two gens
 matchTrecho(X, Y, Segment, Acc, AccMax) :-
     length(X, Xlen),
     length(Y, Ylen),
