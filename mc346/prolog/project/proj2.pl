@@ -2,8 +2,13 @@ main :-
   prompt(_, ''),
   % read_string(user_input, _, Input),
   toTrechos(
-  "xyxyxyaaaaabbbbbbbbcccccccccddddddddefefe1112222222211111122222222ddddddd
-dddddddababababababababababababababababab", Trechos),
+  "xyxyxyaaaaabbbbbbbbcccccccccddddddddefefe
+ddddddababababababababababababababababab
+7777uuususususususususususususususususuusuuus
+zzzzz444444444445555555555555555666666677777
+uuusmnmnmnmnmnmnmmmnmnmnmnmn
+xxxxxxxkkkkkkkkkkkkkkkkeeeeeeeee
+efefe1112222222211111122222222ddddddd", Trechos),
   recursiveTrechos(Trechos, TrechosR),
   printList(TrechosR).
 
@@ -52,34 +57,30 @@ getXSegments(X, [Y|YS], MatchList, XR, YR) :-
   getXSegments(X, YS, MatchListR, XR, YR),
   (X == Y ->
   	MatchList = MatchListR;
-    matchTrecho(X, Y, Segment, 3),
+    matchTrecho(X, Y, Segment, 3, 0),
     ((Segment == [-1]; MatchListR \= []) -> % Or segment is with element
       MatchList = MatchListR;
       MatchList = [Segment|MatchListR],
       XR = X,
       YR = Y)).
 
-matchTrecho(X, Y, Segment, Acc) :-
-    reverse(X, XRev),
-    slice(XRev, 1, Acc, XSlice),
-    reverse(XSlice, XRevSlice),
-    slice(Y, 1, Acc, YSlice),
-    (XRevSlice == YSlice ->
-    	AccP is Acc + 1,
-    	matchTrecho(X, Y, Segment, AccP);
-    	(Acc >= 4 ->
-        	length(Y, Ylen),
-        	slice(Y, Acc, Ylen, YEnd),
-        	append(X, YEnd, Segment);
-        	Segment = [-1])).
-
-
-
-
-
-
-
-
-
-
-    
+matchTrecho(X, Y, Segment, Acc, AccMax) :-
+    length(X, Xlen),
+    length(Y, Ylen),
+    (Acc =< Ylen, Acc =< Xlen ->
+      reverse(X, XRev),
+      slice(XRev, 1, Acc, XSlice),
+      reverse(XSlice, XRevSlice),
+      slice(Y, 1, Acc, YSlice),
+   	  (XRevSlice == YSlice ->
+          AccMaxP is Acc,
+          AccP is Acc + 1,
+          matchTrecho(X, Y, Segment, AccP, AccMaxP);
+          AccP is Acc + 1,
+          AccMaxP is AccMax,
+          matchTrecho(X, Y, Segment, AccP, AccMaxP));
+      (AccMax >= 4 ->
+        length(Y, Ylen),
+        slice(Y, AccMax, Ylen, YEnd),
+        append(X, YEnd, Segment);
+        Segment = [-1])).
