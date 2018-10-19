@@ -2,13 +2,12 @@ main :-
   prompt(_, ''),
   % read_string(user_input, _, Input),
   toTrechos(
-  "xyxyxyaaaaabbbbbbbbcccccccccddddddddefefe
-ddddddababababababababababababababababab
-7777uuususususususususususususususususuusuuus
-zzzzz444444444445555555555555555666666677777
-uuusmnmnmnmnmnmnmmmnmnmnmnmn
-xxxxxxxkkkkkkkkkkkkkkkkeeeeeeeee
-efefe1112222222211111122222222ddddddd", Trechos),
+  "xxxxxababababyyyyyy
+yyaaaaaaaaaaa
+yyyyyyeeeeeeeeeeeeee
+cccccccccccccccxxxxx
+fffffffffffffffwwwwww
+wwwwwwgggggggggggxx", Trechos),
   recursiveTrechos(Trechos, TrechosR),
   printList(TrechosR).
 
@@ -83,6 +82,7 @@ matchTrecho(X, Y, Segment, Acc, AccMax) :-
           matchTrecho(X, Y, Segment, AccP, AccMaxP));
       (AccMax >= 4 ->
         length(Y, Ylen),
-        slice(Y, AccMax, Ylen, YEnd),
+        AccMaxP is AccMax + 1,
+        slice(Y, AccMaxP, Ylen, YEnd),
         append(X, YEnd, Segment);
         Segment = [-1])).
