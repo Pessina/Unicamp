@@ -1,22 +1,16 @@
 main :-
-  prompt(_, ''),
-  % read_string(user_input, _, Input),
-  toTrechos(
-  "xxxxxababababyyyyyy
-yyaaaaaaaaaaa
-yyyyyyeeeeeeeeeeeeee
-cccccccccccccccxxxxx
-fffffffffffffffwwwwww
-wwwwwwgggggggggggxx", Trechos),
+  read_string(user_input, _, Input),
+  toTrechos(Input, Trechos),
   recursiveTrechos(Trechos, TrechosR),
-  printList(TrechosR).
+  print_list(TrechosR).
 
-% Print a list
-printList([]).
-printList([X|XS]) :-
-  atom_chars(A, X),
-  writeln(A),
-  printList(XS).
+% prints a list of lists of characters
+print_list([]).
+print_list([ []|_ ]).
+print_list([X|XS]) :-
+  atomics_to_string(X, String), % converts a list of characters into a string
+  writeln(String),
+  print_list(XS).
 
 % Slice a list
 slice([X|_],1,1,[X]).
