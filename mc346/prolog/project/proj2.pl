@@ -1,3 +1,9 @@
+% University of Campinas - MC346
+% Project 2
+% Authors:
+% Felipe Sousa Pessina, RA: 171214
+% Guilherme Mendeleh Perrotta, RA: 173846
+
 main :-
   read_string(user_input, _, Input),
   toTrechos(Input, Trechos),
@@ -12,12 +18,22 @@ print_list([X|XS]) :-
   writeln(String),
   print_list(XS).
 
+% Takes the input, and returns list of trechos
+toTrechos(Input, Trechos) :-
+  atomic_list_concat(TrechosString, '\n', Input),
+  maplist(atom_chars, TrechosString, Trechos).
+
 % Slice a list
 slice([X|_],1,1,[X]).
-slice([X|Xs],1,K,[X|Ys]) :- K > 1,
-   K1 is K - 1, slice(Xs,1,K1,Ys).
-slice([_|Xs],I,K,Ys) :- I > 1,
-   I1 is I - 1, K1 is K - 1, slice(Xs,I1,K1,Ys).
+slice([X|Xs],1,K,[X|Ys]) :-
+  K > 1,
+  K1 is K - 1,
+  slice(Xs,1,K1,Ys).
+slice([_|Xs],I,K,Ys) :-
+  I > 1,
+  I1 is I - 1,
+  K1 is K - 1,
+  slice(Xs,I1,K1,Ys).
 
 % Recursive search for new trechos, until no more trechos can be created
 recursiveTrechos(Trechos, TrechosR) :-
@@ -27,12 +43,7 @@ recursiveTrechos(Trechos, TrechosR) :-
     	delete(Trechos, XR, TrechosR1),
     	delete(TrechosR1, YR, TrechosR2),
    		append(Segments, TrechosR2, TrechosR3),
-        recursiveTrechos(TrechosR3, TrechosR)).
-
-% Take the string input, and return list of trechos
-toTrechos(Input, Trechos) :-
-  atomic_list_concat(TrechosString, '\n', Input),
-  maplist(atom_chars, TrechosString, Trechos).
+      recursiveTrechos(TrechosR3, TrechosR)).
 
 % Take the list of trechos, and return the segments
 getSegments([], _, [], _, _).
