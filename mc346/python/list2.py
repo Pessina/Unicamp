@@ -41,9 +41,12 @@ def zip_2(iterator1, iterator2, i):
         return iter([])
 
 def cart(iterator1, iterator2):
-    while True:
-        yield next(iterator1) * next(iterator2)
-
+    list1 = list(iterator1)
+    list2 = list(iterator2)
+    for i1 in list1:
+        for i2 in list2:
+            yield (i1, i2)
+            
 def ciclo(iterator):
     lista = list(iterator)
     while True:
@@ -62,5 +65,14 @@ def rangeinf(init, passo):
 def take(lista, n):
     return lista[:n]
 
-def drop(list, n):
+def take_iter(lista, n):
+    return iter(lista[:n])
+
+def drop(lista, n):
     return lista[n:]
+
+def drop_iter(lista, n):
+    return iter(lista[n:])
+
+for i in cart([1, 2, 3, 4, 5], [7, 8, 9, 10, 11]):
+    print (i)
