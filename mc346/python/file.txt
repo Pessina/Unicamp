@@ -1,0 +1,6 @@
+Calling f with Arguments = (5, 0), time = 2018-11-01 14:35:42.571204
+Calling f with Arguments = (5, 10), time = 2018-11-01 14:35:45.718700
+Calling f with Arguments = (10, 10), time = 2018-11-01 14:35:45.720583
+Calling f with Arguments = (10, 10), time = 2018-11-01 14:35:45.722386
+Calling f with Arguments = (5, 12), time = 2018-11-01 14:35:45.724160
+Calling f with Arguments = (5, 0), time = 2018-11-01 14:35:45.725685
