@@ -29,18 +29,16 @@ class Memorize:
         self.dict_mem = {}
         self.f = f
 
-    def decorator_memorize (self):
-         def wrapper_memorize(*args):
-             try:
-                 x = self.dict_mem[args]
-                 print ('hit dict')
-                 return x
-             except:
-                 print ('miss dict')
-                 x = self.f(*args)
-                 self.dict_mem[args] = x
-                 return x
-         return wrapper_memorize
+    def __call__ (self, *args):
+         try:
+             x = self.dict_mem[args]
+             print ('hit dict')
+             return x
+         except:
+             print ('miss dict')
+             x = self.f(*args)
+             self.dict_mem[args] = x
+             return x
 
 def decorator_log(f, arq):
     def wrapper_log(*args):
@@ -53,10 +51,10 @@ def decorator_log(f, arq):
 def f (x, y):
     return x * y
 
-x = decorator_log(f, 'file.txt')
+x = Memorize(f)
 
 print (x(5, 10))
+print (x(5, 10))
 print (x(10, 10))
+print (x(5, 10))
 print (x(10, 10))
-print (x(5, 12))
-print (x(5, 0))
