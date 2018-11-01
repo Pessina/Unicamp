@@ -13,16 +13,16 @@ def decorator_time(f):
 
     return wrapper_time
 
-def decorator_info (f):
+class Info:
+    def __init__ (self, f):
+        self.f = f
+        self.info = ""
 
-    def wrapper_info (*args):
-
-        print ("Calling {0} with Arguments = {1}, time = {2}".format(f.__name__, args, datetime.now()))
+    def __call__(self, *args):
         x = f(*args)
-        print ("Return = {0}".format(x))
-
+        self.info = "Calling {0}, Arguments = {1}, Time = {2}, Return = {3}".format(f.__name__, args, datetime.now(), x)
+        print (self.info)
         return x
-    return wrapper_info
 
 class Memorize:
     def __init__ (self, f):
@@ -51,10 +51,6 @@ def decorator_log(f, arq):
 def f (x, y):
     return x * y
 
-x = Memorize(f)
+x = Info(f)
 
 print (x(5, 10))
-print (x(5, 10))
-print (x(10, 10))
-print (x(5, 10))
-print (x(10, 10))
