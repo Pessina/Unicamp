@@ -1,3 +1,7 @@
+# Test 1, teste básico ver se concatena os caminhos
+# Teste 2, verifica se escolhe o caminho com a incovenienceia < 1.4
+# Teste 3, verifica se ignora o caminho com inconveniencia > 1.4
+
 import numpy as np
 
 def read_input():
@@ -165,12 +169,12 @@ if (uber_input != []):
     for element in uber_input:
         element = element.split(' ')
         path = []
-        if len(element == 3):
-            path += constructPath(path_next_graph, element[0], element[2], [])
-            path += constructPath(path_next_graph, element[2], element[1], [])
+        if len(element) == 3:
+            path += constructPath(min_path_next_edge_graph, element[0], element[2], [])
+            path += constructPath(min_path_next_edge_graph, element[2], element[1], [])
             path_list.append(path)
         else:
-            path += constructPath(path_next_graph, element[0], element[1], [])
+            path += constructPath(min_path_next_edge_graph, element[0], element[1], [])
             path_list.append(path)
 
 print (path_list)
