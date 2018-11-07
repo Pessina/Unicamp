@@ -1,6 +1,10 @@
 # Test 1, teste básico ver se concatena os caminhos
 # Teste 2, verifica se escolhe o caminho com a incovenienceia < 1.4
 # Teste 3, verifica se ignora o caminho com inconveniencia > 1.4
+# Teste 4, verifica se a entrada de uber com 3 funciona
+# Teste 5, testa se ele opta pelo caminho mais longo para carona
+# Teste 6, verifica se uber de 3 elementos, faz a rota baseado no elemento em que está e não concatena com outro de 3 elementos
+# Teste 7, 
 
 import numpy as np
 
@@ -91,7 +95,7 @@ def calculateInconvenience (first, second, path_graph, path_next_graph):
     # We use calculate the alredy made path, and use the remaining path to
     # calculate inconvenience
     if len(first) == 3:
-        path += constructPath(path_next_graph, first[0], first[2], [])
+        path += constructPath(path_next_graph, first[0], first[2], [])[:-1]
         first[0] = first[2]
 
     # Assing value to the path edges
@@ -118,13 +122,13 @@ def calculateInconvenience (first, second, path_graph, path_next_graph):
         path += constructPath(path_next_graph, B, D, [])[1:]
         return inconvenience_1, path
     else:
-        if inconvenience_2 > 1.4:
-            return 1.5, []
-        else:
+        if inconvenience_2 < 1.4:
             path += constructPath(path_next_graph, A, C, [])
             path += constructPath(path_next_graph, C, D, [])[1:]
             path += constructPath(path_next_graph, D, B, [])[1:]
             return inconvenience_2, path
+        else:
+            return 1.5, []
 
 
 def uberPool(uber_input, min_path_graph, min_path_next_edge_graph):
@@ -138,7 +142,7 @@ def uberPool(uber_input, min_path_graph, min_path_next_edge_graph):
                 continue
             else:
                 inconvenience, path = calculateInconvenience (first_passenger, second_passenger, min_path_graph, min_path_next_edge_graph)
-                if inconvenience < min_inconvenience:
+                if inconvenience < min_inconvenience and inconvenience < 1.4:
                     passenger1 = first_passenger
                     passenger2 = second_passenger
                     min_inconvenience = inconvenience
@@ -171,7 +175,7 @@ if (uber_input != []):
         path = []
         if len(element) == 3:
             path += constructPath(min_path_next_edge_graph, element[0], element[2], [])
-            path += constructPath(min_path_next_edge_graph, element[2], element[1], [])
+            path += constructPath(min_path_next_edge_graph, element[2], element[1], [])[1:]
             path_list.append(path)
         else:
             path += constructPath(min_path_next_edge_graph, element[0], element[1], [])
