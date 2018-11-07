@@ -4,7 +4,6 @@
 # Teste 4, verifica se a entrada de uber com 3 funciona
 # Teste 5, testa se ele opta pelo caminho mais longo para carona
 # Teste 6, verifica se uber de 3 elementos, faz a rota baseado no elemento em que está e não concatena com outro de 3 elementos
-# Teste 7, 
 
 import numpy as np
 
@@ -75,6 +74,7 @@ def floydWarshallWithPathReconstruction (graph):
 
     return graph, p
 
+# Get all vertices of the path between i and j
 def constructPath(p, i, j, path):
     i,j = int(i), int(j)
     if(i==j):
@@ -130,7 +130,8 @@ def calculateInconvenience (first, second, path_graph, path_next_graph):
         else:
             return 1.5, []
 
-
+# Iterate throw all pairs possibilities to find the pair with the smallest inconvenience
+# If the smaller inconvenience is smaller than 1.4 they share the uber, otherwise they do their on paths
 def uberPool(uber_input, min_path_graph, min_path_next_edge_graph):
     min_inconvenience = 1.4
     best_path = []
@@ -168,7 +169,7 @@ while True:
     else:
         break
 
-# Append other paths, without pairs
+# Append other uber requests, without pairs
 if (uber_input != []):
     for element in uber_input:
         element = element.split(' ')
