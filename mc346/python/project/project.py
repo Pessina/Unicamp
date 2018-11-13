@@ -109,7 +109,7 @@ def calculateInconvenience (first, second, path_graph, path_next_graph):
     travel_time = path_graph[A][B]
 
     # Possible paths A C B D or A C D B
-    time_with_passenger_1 = path_graph[A][C] + path_graph[C][B] + path_graph[B][D]
+    time_with_passenger_1 = path_graph[A][C] + path_graph[C][B]
     time_with_passenger_2 = path_graph[A][C] + path_graph[C][D] + path_graph[D][B]
 
     inconvenience_1 = time_with_passenger_1/travel_time
@@ -139,6 +139,8 @@ def uberPool(uber_input, min_path_graph, min_path_next_edge_graph):
     passenger2 = None
     for first_passenger in uber_input:
         for second_passenger in uber_input:
+            if first_passenger == None or second_passenger == None:
+                continue
             if len(second_passenger.split(' ')) == 3 or first_passenger == second_passenger:
                 continue
             else:
@@ -150,10 +152,14 @@ def uberPool(uber_input, min_path_graph, min_path_next_edge_graph):
                     best_path = path
 
     if best_path != []:
-        uber_input.remove(passenger1)
-        uber_input.remove(passenger2)
+        passenger1 = uber_input.index(passenger1)
+        uber_input [passenger1] = None
+        passenger1 += 1
+        passenger2 = uber_input.index(passenger2)
+        uber_input [passenger2] = None
+        passenger2 += 1
 
-    return best_path, uber_input
+    return best_path, uber_input, [passenger1, passenger2]
 
 graph_input, uber_input = read_input()
 graph = createGraph(getMaxEdgeValue(graph_input), graph_input)
@@ -163,23 +169,31 @@ path_list = []
 
 # Calculate the pair with inconvenience smaller than 1.4
 while True:
-    path, uber_input = uberPool(uber_input, min_path_graph, min_path_next_edge_graph)
+    path, uber_input, passengers = uberPool(uber_input, min_path_graph, min_path_next_edge_graph)
     if (path != []):
-        path_list.append(path)
+        path_list.append((path, passengers))
     else:
         break
 
 # Append other uber requests, without pairs
 if (uber_input != []):
     for element in uber_input:
+        if element == None:
+            continue
+        index = uber_input.index(element)
         element = element.split(' ')
         path = []
         if len(element) == 3:
             path += constructPath(min_path_next_edge_graph, element[0], element[2], [])
             path += constructPath(min_path_next_edge_graph, element[2], element[1], [])[1:]
-            path_list.append(path)
+            path_list.append((path, [index + 1]))
         else:
             path += constructPath(min_path_next_edge_graph, element[0], element[1], [])
-            path_list.append(path)
+            path_list.append((path, [index + 1]))
 
-print (path_list)
+for element in path_list:
+    print ("passageiros : {0} ".format(' '.join([str(x) for x in element[1]])), end='')
+    print ("percusos : ", end='')
+    for vertice in element[0]:
+        print(" {0}".format(str(vertice)), end='')
+    print('')
