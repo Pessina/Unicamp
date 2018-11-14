@@ -1,10 +1,3 @@
-# Test 1, teste básico ver se concatena os caminhos
-# Teste 2, verifica se escolhe o caminho com a incovenienceia < 1.4
-# Teste 3, verifica se ignora o caminho com inconveniencia > 1.4
-# Teste 4, verifica se a entrada de uber com 3 funciona
-# Teste 5, testa se ele opta pelo caminho mais longo para carona
-# Teste 6, verifica se uber de 3 elementos, faz a rota baseado no elemento em que está e não concatena com outro de 3 elementos
-
 import numpy as np
 
 def read_input():
