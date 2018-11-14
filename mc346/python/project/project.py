@@ -22,6 +22,10 @@ def read_input():
                 flag_read_uber = 1
                 continue
 
+            string_splitted = string.split(' ')
+            if string_splitted [0] == '':
+                string = ''.join([str(x) for x in string[1:]])
+
             if flag_read_uber == 0:
                 graph_input.append(string)
             if flag_read_uber == 1:
@@ -90,12 +94,13 @@ def calculateInconvenience (first, second, path_graph, path_next_graph):
     first = first.split(' ')
     second = second.split(' ')
     path = []
+    inconvenience_1 = None
+    inconvenience_2 = None
 
     # If the passenger is on travel
     # We use calculate the alredy made path, and use the remaining path to
     # calculate inconvenience
     if len(first) == 3:
-        path += constructPath(path_next_graph, first[0], first[2], [])[:-1]
         first[0] = first[2]
 
     # Assing value to the path edges
@@ -106,14 +111,24 @@ def calculateInconvenience (first, second, path_graph, path_next_graph):
 
     # We assume that we have a possible path between A and B
     # It means travel time is no inf
-    travel_time = path_graph[A][B]
+    first_travel_time = path_graph[A][B]
+    second_travel_time = path_graph[C][D]
+
+    if path_graph[A][C] == float('inf') or path_graph[C][B] == float('inf'):
+        return 1.5, []
 
     # Possible paths A C B D or A C D B
-    time_with_passenger_1 = path_graph[A][C] + path_graph[C][B]
-    time_with_passenger_2 = path_graph[A][C] + path_graph[C][D] + path_graph[D][B]
+    first_time_with_passenger_1 = path_graph[A][C] + path_graph[C][B]
+    second_time_with_passenger_1 = path_graph[C][B] + path_graph [B][D]
+    first_inconvenience_1 = first_time_with_passenger_1/first_travel_time
+    second_inconvenience_1 = second_time_with_passenger_1/second_travel_time
+    inconvenience_1 = max([first_inconvenience_1, second_inconvenience_1])
 
-    inconvenience_1 = time_with_passenger_1/travel_time
-    inconvenience_2 = time_with_passenger_2/travel_time
+    first_time_with_passenger_2 = path_graph[A][C] + path_graph[C][D] + path_graph[D][B]
+    second_time_with_passenger_2 = path_graph[C][D]
+    first_inconvenience_2 = first_time_with_passenger_2/first_travel_time
+    second_inconvenience_2 = second_time_with_passenger_2/second_travel_time
+    inconvenience_2 = max([first_inconvenience_2, second_inconvenience_2])
 
     # Return the smaller inconvenience if some of than is smaller than 1.4
     if inconvenience_1 < inconvenience_2:
@@ -145,7 +160,7 @@ def uberPool(uber_input, min_path_graph, min_path_next_edge_graph):
                 continue
             else:
                 inconvenience, path = calculateInconvenience (first_passenger, second_passenger, min_path_graph, min_path_next_edge_graph)
-                if inconvenience < min_inconvenience and inconvenience < 1.4:
+                if inconvenience < min_inconvenience:
                     passenger1 = first_passenger
                     passenger2 = second_passenger
                     min_inconvenience = inconvenience
@@ -184,8 +199,7 @@ if (uber_input != []):
         element = element.split(' ')
         path = []
         if len(element) == 3:
-            path += constructPath(min_path_next_edge_graph, element[0], element[2], [])
-            path += constructPath(min_path_next_edge_graph, element[2], element[1], [])[1:]
+            path += constructPath(min_path_next_edge_graph, element[2], element[1], [])
             path_list.append((path, [index + 1]))
         else:
             path += constructPath(min_path_next_edge_graph, element[0], element[1], [])
