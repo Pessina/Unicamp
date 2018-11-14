@@ -132,15 +132,11 @@ def calculateInconvenience (first, second, path_graph, path_next_graph):
 
     # Return the smaller inconvenience if some of than is smaller than 1.4
     if inconvenience_1 < inconvenience_2:
-        path += constructPath(path_next_graph, A, C, [])
-        path += constructPath(path_next_graph, C, B, [])[1:]
-        path += constructPath(path_next_graph, B, D, [])[1:]
+        path += [A, C, B, D]
         return inconvenience_1, path
     else:
         if inconvenience_2 < 1.4:
-            path += constructPath(path_next_graph, A, C, [])
-            path += constructPath(path_next_graph, C, D, [])[1:]
-            path += constructPath(path_next_graph, D, B, [])[1:]
+            path += [A, C, D, B]
             return inconvenience_2, path
         else:
             return 1.5, []
@@ -199,15 +195,15 @@ if (uber_input != []):
         element = element.split(' ')
         path = []
         if len(element) == 3:
-            path += constructPath(min_path_next_edge_graph, element[2], element[1], [])
+            path += [element[2], element[1]]
             path_list.append((path, [index + 1]))
         else:
-            path += constructPath(min_path_next_edge_graph, element[0], element[1], [])
+            path += [element[0], element[1]]
             path_list.append((path, [index + 1]))
 
 for element in path_list:
     print ("passageiros : {0} ".format(' '.join([str(x) for x in element[1]])), end='')
-    print ("percusos : ", end='')
+    print ("percurso : ", end='')
     for vertice in element[0]:
         print(" {0}".format(str(vertice)), end='')
     print('')
