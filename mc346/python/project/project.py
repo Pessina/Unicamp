@@ -188,7 +188,7 @@ if (uber_input != []):
         element = element.split(' ')
         path = []
         if len(element) == 3:
-            path += [element[2], element[1]]
+            path += [element[0], element[1]]
             path_list.append((path, [index + 1]))
         else:
             path += [element[0], element[1]]
