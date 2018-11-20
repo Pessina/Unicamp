@@ -195,11 +195,11 @@ if (uber_input != []):
 
 for element in path_list:
     if len(element[1]) == 1:
-        print ("passageiro: {0} ".format(' '.join([str(x) for x in element[1]])), end='')
+        print ("passageiro {0} ".format(' '.join([str(x) for x in element[1]])), end='')
         print ("percurso:", end='')
     else:
-        print ("passageiros: {0} ".format(' '.join([str(x) for x in element[1]])), end='')
-        print ("percurso: ", end='')
+        print ("passageiros {0} ".format(' e '.join([str(x) for x in element[1]])), end='')
+        print ("percurso:", end='')
     for vertice in element[0]:
         print(" {0}".format(str(vertice)), end='')
     print('')
