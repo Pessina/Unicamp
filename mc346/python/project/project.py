@@ -1,31 +1,30 @@
 import numpy as np
+import sys
 
 def read_input():
+    file = open(sys.argv[1], 'r')
     graph_input = []
     uber_input = []
     flag_read_uber = 0
 
-    while True:
-        # Read iput until EOF
-        try:
-            string = input ()
+    for string in file:
 
-            # Check if we reach the end of graph input
-            if string == '':
-                flag_read_uber = 1
-                continue
+        # Check if we reached the end of graph input
+        if string == '\n':
+            flag_read_uber = 1
+            continue
 
-            string_splitted = string.split(' ')
-            if string_splitted [0] == '':
-                string = ''.join([str(x) for x in string[1:]])
+        string = string.strip('\n')
+        string_splitted = string.split(' ')
+        if string_splitted [0] == '':
+            string = ''.join([str(x) for x in string[1:]])
 
-            if flag_read_uber == 0:
-                graph_input.append(string)
-            if flag_read_uber == 1:
-                uber_input.append(string)
-        except:
-            break
+        if flag_read_uber == 0:
+            graph_input.append(string)
+        if flag_read_uber == 1:
+            uber_input.append(string)
 
+    file.close()
     return graph_input, uber_input
 
 def getMaxEdgeValue (graph_input):
