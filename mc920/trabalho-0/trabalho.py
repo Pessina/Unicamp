@@ -30,9 +30,15 @@ img = cv2.imread('./images/baboon.png', cv2.IMREAD_GRAYSCALE)
 
 # Criando mosaico
 
-patches = image.extract_patches_2d(img, (128, 128))
+h = w = 128
+mosaic = np.empty((128,128), float)
 
-plt.imshow(img, cmap="gray")
+for x in range (0, 512, 128):
+    for y in range (0, 512, 128):
+        mosaic = np.append(mosaic, img[y:y+h, x:x+w])
+
+print (mosaic.shape)
+plt.imshow(mosaic[2], cmap="gray")
 plt.show()
 
 # Print com opencv
