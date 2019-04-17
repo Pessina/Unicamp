@@ -1,8 +1,5 @@
 import numpy as np
 import cv2
-from scipy import signal
-from scipy.ndimage import gaussian_filter
-from matplotlib import pyplot as plt
 
 images = ['baboon.png', 'butterfly.png', 'city.png', 'house.png', 'seagull.png']
 
@@ -42,7 +39,7 @@ for i in range(0, len(images)):
     processed_image_h5 = np.uint8(np.hypot(np.float32(processed_image_h3), np.float32(processed_image_h4)))
 
     # Gaussian filter
-    for sigma in range (1, 10, 3):
+    for sigma in range (1, 9, 1):
 
         # Create gaussian filter
         x = cv2.getGaussianKernel(10,sigma)
@@ -66,10 +63,6 @@ for i in range(0, len(images)):
 
         cv2.imwrite('processed_images/' + images[i].split('.')[0] + '-gaussian' + str(sigma) + '.png',img_back)
         cv2.imwrite('processed_images/' + images[i].split('.')[0] + '-fourier_magnitude_spectrum.png',magnitude_spectrum)
-
-    # Print image matplotlib
-    # plt.imshow(processed_image_h2, cmap = 'gray')
-    # plt.show()
 
     # Print image opencv
     # cv2.imshow('image',np.uint8(processed_image_h2))
