@@ -43,7 +43,7 @@ img = cv2.imread("images/bitmap.pbm", -1)
 # Convert to binary image
 img[img == 255] = 1
 
-# Invert image, 1 is black and 0 is white
+# Invert image
 inverse = np.ones(img.shape, np.uint8)
 inverse [img == 1] = 0
 
@@ -55,6 +55,7 @@ for x1, y1, width1, height1, area1 in output1[2]:
 
         # Filtering what is text and not text
         if ratio_black_to_white > 0.2 and ratio_black_to_white < 0.5 and ratio_transitions > 0.25:
+#                 cv2.rectangle(inverse, (x1, y1), (x1 + width1, y1 + height1), 1, 1)
                 output2 = morphological_operations (rectangle_line, 10, 10, 13)
                 for x2, y2, width2, height2, area2 in output2[2][1:]:
                     rectangle_word = inverse[y1+y2:y1+y2+height2, x1+x2:x1+x2+width2]
@@ -66,4 +67,4 @@ for x1, y1, width1, height1, area1 in output1[2]:
 
 final = np.zeros(img.shape, np.uint8)
 final [inverse == 0] = 1
-cv2.imwrite("image.pbm", final)
+cv2.imwrite("final_images/image_final.pbm", final)
