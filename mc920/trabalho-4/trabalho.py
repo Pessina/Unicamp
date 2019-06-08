@@ -1,9 +1,6 @@
 import cv2
 import numpy as np
 
-gray1 = cv2.imread('images/foto4A.jpg', 0)
-gray2 = cv2.imread('images/foto4B.jpg', 0)
-
 def orb(img):
     # Initiate ORB detector
     orb = cv2.ORB_create()
@@ -33,13 +30,38 @@ def find_matches(img1, kp1, des1, img2, kp2, des2):
     matches = bf.knnMatch(des1,des2, k=2)
     # Apply ratio test to find best matches and print distances
     good = []
+    good2 = []
     for m,n in matches:
-        if m.distance < 0.45*n.distance:
-            good.append([m])
+        if m.distance < 0.7*n.distance:
+            good2.append([m])
+            good.append(m)
 
     # cv2.drawMatchesKnn expects list of lists as matches.
-    img_ret = cv2.drawMatchesKnn(img1,kp1,img2,kp2,good, None, flags=2)
-    return matches, img_ret
+    img_ret = cv2.drawMatchesKnn(img1,kp1,img2,kp2,good2, None, flags=2)
+    return good, matches, img_ret
+
+def homography_matrix(good, img1, kp1, des1, img2, kp2, des2):
+    src_pts = np.float32([ kp1[m.queryIdx].pt for m in good ]).reshape(-1,1,2)
+    dst_pts = np.float32([ kp2[m.trainIdx].pt for m in good ]).reshape(-1,1,2)
+    M, mask = cv2.findHomography(src_pts, dst_pts, cv2.RANSAC,5.0)
+    matchesMask = mask.ravel().tolist()
+    h,w = img1.shape
+    pts = np.float32([ [0,0],[0,h-1],[w-1,h-1],[w-1,0] ]).reshape(-1,1,2)
+    dst = cv2.perspectiveTransform(pts,M)
+    img2 = cv2.polylines(img2,[np.int32(dst)],True,255,3, cv2.LINE_AA)
+    draw_params = dict(matchColor = (0,255,0), # draw matches in green color
+                   singlePointColor = None,
+                   matchesMask = matchesMask, # draw only inliers
+                   flags = 2)
+    img3 = cv2.drawMatches(img1,kp1,img2,kp2,good,None,**draw_params)
+    return M, mask, img3
+
+gray1 = cv2.imread('images/foto1A.jpg', 0)
+gray2 = cv2.imread('images/foto1B.jpg', 0)
+
+img1 = cv2.imread('images/foto1A.jpg', -1)
+img2 = cv2.imread('images/foto1B.jpg', -1)
+
 
 # Identify points of interest and descriptors
 orb_kp1, orb_des1, orb_image1 = orb(gray1)
@@ -49,8 +71,21 @@ orb_kp2, orb_des2, orb_image2 = orb(gray2)
 # brief_kp2, brief_des2, brief_image2 = brief(gray2)
 
 # Find matches
-matches, match_image = find_matches(gray1, orb_kp1, orb_des1, gray2, orb_kp2, orb_des2)
+good, matches, match_image = find_matches(img1, orb_kp1, orb_des1, img2, orb_kp2, orb_des2)
 
-# cv2.imwrite('orb_final_image.jpg', orb_image1)
-# cv2.imwrite('brief_final_image.jpg', brief_image1)
-cv2.imwrite('matches_final_image.jpg', match_image)
+# Homography Matrix
+M, mask, homography_image = homography_matrix(good, gray1, orb_kp1, orb_des1, gray2, orb_kp2, orb_des2)
+
+# Warp Perspective
+dst = cv2.warpPerspective(img1, M, (gray1.shape[1] + gray2.shape[1], gray2.shape[0]))
+cv2.imwrite('warpPerspective_image.jpg', dst)
+
+# Creating panoramic image
+dst[0:gray2.shape[0], 0:gray2.shape[1]] = img2
+
+print(M)
+cv2.imwrite('orb_image1.jpg', orb_image1)
+cv2.imwrite('orb_image2.jpg', orb_image2)
+cv2.imwrite('matches_image.jpg', match_image)
+cv2.imwrite('homography_image.jpg', homography_image)
+cv2.imwrite('panoramic_image.jpg', dst)
