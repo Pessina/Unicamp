@@ -56,29 +56,33 @@ def homography_matrix(good, img1, kp1, des1, img2, kp2, des2):
     img3 = cv2.drawMatches(img1,kp1,img2,kp2,good,None,**draw_params)
     return M, mask, img3
 
-gray1 = cv2.imread('images/foto4A.jpg', 0)
-gray2 = cv2.imread('images/foto4B.jpg', 0)
+for i in range (1, 6):
+    gray1 = cv2.imread('images/foto' + str(i) + 'A.jpg', 0)
+    gray2 = cv2.imread('images/foto' + str(i) + 'B.jpg', 0)
 
-img1 = cv2.imread('images/foto4A.jpg', -1)
-img2 = cv2.imread('images/foto4B.jpg', -1)
+    img1 = cv2.imread('images/foto' + str(i) + 'A.jpg', -1)
+    img2 = cv2.imread('images/foto' + str(i) + 'B.jpg', -1)
 
-# Identify points of interest and descriptors
-orb_kp1, orb_des1, orb_image1 = orb(gray1)
-# brief_kp1, brief_des1, brief_image1 = brief(gray1)
+    # Identify points of interest and descriptors
+    orb_kp1, orb_des1, orb_image1 = orb(gray1)
+    # brief_kp1, brief_des1, brief_image1 = brief(gray1)
 
-orb_kp2, orb_des2, orb_image2 = orb(gray2)
-# brief_kp2, brief_des2, brief_image2 = brief(gray2)
+    orb_kp2, orb_des2, orb_image2 = orb(gray2)
+    # brief_kp2, brief_des2, brief_image2 = brief(gray2)
 
-# Find matches
-good, matches, match_image = find_matches(img1, orb_kp1, orb_des1, img2, orb_kp2, orb_des2)
+    # Find matches
+    good, matches, match_image = find_matches(img1, orb_kp1, orb_des1, img2, orb_kp2, orb_des2)
 
-# Homography Matrix
-M, mask, homography_image = homography_matrix(good, gray1, orb_kp1, orb_des1, gray2, orb_kp2, orb_des2)
+    # Homography Matrix
+    M, mask, homography_image = homography_matrix(good, gray1, orb_kp1, orb_des1, gray2, orb_kp2, orb_des2)
 
-# Warp Perspective
-dst = cv2.warpPerspective(img1, M, (gray1.shape[1] + gray2.shape[1], gray2.shape[0]))
+    # Warp Perspective
+    dst = cv2.warpPerspective(img1, M, (gray1.shape[1] + gray2.shape[1], gray2.shape[0]))
 
-# Creating panoramic image
-dst[0:gray2.shape[0], 0:gray2.shape[1]] = img2
+    # Creating panoramic image
+    dst[0:gray2.shape[0], 0:gray2.shape[1]] = img2
 
-cv2.imwrite('panoramic_image.jpg', dst)
+    cv2.imwrite('final_images/Foto' + str(i) + '_orb_image1.jpg', orb_image1)
+    cv2.imwrite('final_images/Foto' + str(i) + '_orb_image2.jpg', orb_image2)
+    cv2.imwrite('final_images/Foto' + str(i) + '_matches_image.jpg', match_image)
+    cv2.imwrite('final_images/Foto' + str(i) + '_panoramic_image.jpg', dst)
