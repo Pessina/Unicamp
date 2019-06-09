@@ -32,7 +32,7 @@ def find_matches(img1, kp1, des1, img2, kp2, des2):
     good = []
     good2 = []
     for m,n in matches:
-        if m.distance < 0.7*n.distance:
+        if m.distance < 0.75*n.distance:
             good2.append([m])
             good.append(m)
 
@@ -56,12 +56,11 @@ def homography_matrix(good, img1, kp1, des1, img2, kp2, des2):
     img3 = cv2.drawMatches(img1,kp1,img2,kp2,good,None,**draw_params)
     return M, mask, img3
 
-gray1 = cv2.imread('images/foto1A.jpg', 0)
-gray2 = cv2.imread('images/foto1B.jpg', 0)
+gray1 = cv2.imread('images/foto4A.jpg', 0)
+gray2 = cv2.imread('images/foto4B.jpg', 0)
 
-img1 = cv2.imread('images/foto1A.jpg', -1)
-img2 = cv2.imread('images/foto1B.jpg', -1)
-
+img1 = cv2.imread('images/foto4A.jpg', -1)
+img2 = cv2.imread('images/foto4B.jpg', -1)
 
 # Identify points of interest and descriptors
 orb_kp1, orb_des1, orb_image1 = orb(gray1)
@@ -78,14 +77,8 @@ M, mask, homography_image = homography_matrix(good, gray1, orb_kp1, orb_des1, gr
 
 # Warp Perspective
 dst = cv2.warpPerspective(img1, M, (gray1.shape[1] + gray2.shape[1], gray2.shape[0]))
-cv2.imwrite('warpPerspective_image.jpg', dst)
 
 # Creating panoramic image
 dst[0:gray2.shape[0], 0:gray2.shape[1]] = img2
 
-print(M)
-cv2.imwrite('orb_image1.jpg', orb_image1)
-cv2.imwrite('orb_image2.jpg', orb_image2)
-cv2.imwrite('matches_image.jpg', match_image)
-cv2.imwrite('homography_image.jpg', homography_image)
 cv2.imwrite('panoramic_image.jpg', dst)
