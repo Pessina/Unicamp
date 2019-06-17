@@ -16,6 +16,6 @@ using namespace std;
 double getDistance(Point p1, Point p2);
 vector<int> solveBottomUp(Instance &instance, int timelimit, chrono::high_resolution_clock::time_point &started);
 vector<int> solveTopDown(Instance &instance, int timelimit, chrono::high_resolution_clock::time_point &started);
-vector<vector<int>> findSubSets(vector<int> arr, int n);
-vector<vector<int>> createGraph (Instance &instance);
+vector<vector<double>> createGraph (Instance &instance);
+double tsp(const vector<vector<double>>& cities, int pos, int visited, vector<vector<double>>& state);
 #endif // SOLVER_H

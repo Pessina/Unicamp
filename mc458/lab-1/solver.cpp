@@ -1,4 +1,6 @@
 #include "solver.h"
+#define VISITED -1
+#define MAX_DISTANCE 2147483647
 
 void print(std::vector<int> const &input)
 {
@@ -7,9 +9,9 @@ void print(std::vector<int> const &input)
 	}
 }
 
-void printMatrix(std::vector<vector<int>> &matrix, Instance &instance) {
-	for (int i = 0; i < instance.n + 1; i++) {
-		for (int j = 0; j < instance.n + 1; j++) {
+void printMatrix(std::vector<vector<double>> &matrix) {
+	for (int i = 0; i < matrix.size(); i++) {
+		for (int j = 0; j < matrix.size(); j++) {
 			std::cout << matrix[i][j] << ' ';
 		}
 		cout << " " << endl;
@@ -25,16 +27,6 @@ double getDistance(Point p1, Point p2){
 
 vector<int> solveBottomUp(Instance &instance, int timelimit, chrono::high_resolution_clock::time_point &started){
 	vector<int> sol;
-
-	// generate index vector, to select subsets
-	// vector<int> vindex(instance.n);
-  // iota(vindex.begin(), vindex.end(), 0);
-	// findSubSets(vindex, instance.n);
-	vector<vector<int>> matrix = createGraph(instance);
-	// printMatrix(matrix, instance);
-
-
-	// g(i, S) = min {Cik + g(k, S - {k})}
 
 	for(int i = 1; i < instance.n - 1; i++){
 		sol.push_back(i);
@@ -52,48 +44,51 @@ vector<int> solveBottomUp(Instance &instance, int timelimit, chrono::high_resolu
 }
 
 vector<int> solveTopDown(Instance &instance, int timelimit, chrono::high_resolution_clock::time_point &started){
+
+	vector<vector<double>> cities = createGraph(instance);
+	vector<vector<double>> state(cities.size());
+
+    for(auto& neighbors : state)
+        neighbors = vector<double>((1 << cities.size()) - 1, MAX_DISTANCE);
+
+    cout << "minimum: " << tsp(cities, 0, 1, state) << endl;
+
+	// g(i, S) = min {Cik + g(k, S - {k})}
+
 	return solveBottomUp(instance, timelimit, started);
 }
 
-vector<vector<int>> findSubSets(vector<int> arr, int n) {
-    vector<vector<int>> list;
+double tsp(const vector<vector<double>>& cities, int pos, int visited, vector<vector<double>>& state)
+{
+    if(visited == ((1 << cities.size()) - 1))
+        return cities[pos][0]; // return to starting city
 
-		for (int i = 0; i < (int) pow(2, n); i++) {
-        vector<int> subset;
+    if(state[pos][visited] != MAX_DISTANCE)
+        return state[pos][visited];
 
-        for (int j = 0; j < n; j++) {
-            if ((i & (1 << j)) != 0)
-                subset.push_back(arr[j]);
-        }
-
-        list.push_back(subset);
-    }
-
-		// consider every subset
-    for (vector<int> subset : list)
+    for(int i = 0; i < cities.size(); ++i)
     {
-        // split the subset and print its elements
-        for (int str: subset)
-            cout << str << " ";
-        cout << endl;
+        // can't visit ourselves unless we're ending & skip if already visited
+        if(i == pos || (visited & (1 << i)))
+            continue;
+
+        double distance = cities[pos][i] + tsp(cities, i, visited | (1 << i), state);
+        if(distance < state[pos][visited])
+            state[pos][visited] = distance;
     }
-  return list;
+
+    return state[pos][visited];
 }
 
-vector<vector<int>> createGraph (Instance &instance) {
-		vector<vector<int>> matrix (instance.n + 1 ,vector<int>(instance.n + 1));
+
+vector<vector<double>> createGraph (Instance &instance) {
+		vector<vector<double>> matrix (instance.n + 1 ,vector<double>(instance.n + 1));
 		for (int i = 0; i < instance.n + 1; i++) {
 			for (int j = 0; j < instance.n + 1; j++) {
-				// Create fake value that connects start to end
-				if (i == instance.n) {
-					matrix [i] [j] = std::numeric_limits<int>::max();;
-					if (j == 0 || j == instance.n - 1) {
-						matrix [i] [j] = 0;
-					}
-				}
-				else if (j == instance.n) {
-					matrix [i] [j] = std::numeric_limits<int>::max();;
-					if (i == 0 || i == instance.n - 1) {
+				// Create fake value that connects start to end with distance 0
+				if (i == instance.n || j == instance.n) {
+					matrix [i] [j] = MAX_DISTANCE;
+					if (j == 0 || j == instance.n - 1 || i == 0 || i == instance.n - 1) {
 						matrix [i] [j] = 0;
 					}
 				}
