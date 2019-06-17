@@ -1,6 +1,6 @@
 #include "solver.h"
 #define VISITED -1
-#define MAX_DISTANCE 2147483647
+#define MAX_DISTANCE 2000000000
 
 void print(std::vector<int> const &input)
 {
@@ -11,8 +11,8 @@ void print(std::vector<int> const &input)
 
 void printMatrix(std::vector<vector<double>> &matrix) {
 	for (int i = 0; i < matrix.size(); i++) {
-		for (int j = 0; j < matrix.size(); j++) {
-			std::cout << matrix[i][j] << ' ';
+		for (int j = 0; j < matrix[0].size(); j++) {
+				cout << matrix[i][j] << ' ';
 		}
 		cout << " " << endl;
 	}
@@ -45,44 +45,46 @@ vector<int> solveBottomUp(Instance &instance, int timelimit, chrono::high_resolu
 
 vector<int> solveTopDown(Instance &instance, int timelimit, chrono::high_resolution_clock::time_point &started){
 
-	vector<vector<double>> cities = createGraph(instance);
-	vector<vector<double>> state(cities.size());
+	vector<vector<double>> points = createGraph(instance);
+	vector<vector<double>> path(points.size(), vector<double>((1 << points.size()) - 1, MAX_DISTANCE));
+	// The new idea is use a list with all the numbers, and remove each one in each step to recusevly check the minumun path
+	// vector<int> visited (points.size(), 0);
+	double minimumDistance = memoizationSolution(points, 0, 1, path);
+	printMatrix (path);
 
-    for(auto& neighbors : state)
-        neighbors = vector<double>((1 << cities.size()) - 1, MAX_DISTANCE);
-
-    cout << "minimum: " << tsp(cities, 0, 1, state) << endl;
+  cout << "Distance: " << minimumDistance << endl;
 
 	// g(i, S) = min {Cik + g(k, S - {k})}
 
 	return solveBottomUp(instance, timelimit, started);
 }
 
-double tsp(const vector<vector<double>>& cities, int pos, int visited, vector<vector<double>>& state)
-{
-    if(visited == ((1 << cities.size()) - 1))
-        return cities[pos][0]; // return to starting city
+double memoizationSolution(const vector<vector<double>>& points, int point, int visited, vector<vector<double>>& path) {
 
-    if(state[pos][visited] != MAX_DISTANCE)
-        return state[pos][visited];
+		// Visited All cities return to start point
+    if(visited == ((1 << points.size()) - 1))
+        return points[point][0];
 
-    for(int i = 0; i < cities.size(); ++i)
-    {
-        // can't visit ourselves unless we're ending & skip if already visited
-        if(i == pos || (visited & (1 << i)))
+		// If the value on table is already updated just return
+    if(path[point][visited] != MAX_DISTANCE)
+        return path[point][visited];
+
+		// Find minumun path
+    for(int i = 0; i < points.size(); ++i) {
+        if(i == point || (visited & (1 << i)))
             continue;
 
-        double distance = cities[pos][i] + tsp(cities, i, visited | (1 << i), state);
-        if(distance < state[pos][visited])
-            state[pos][visited] = distance;
+        double distance = points[point][i] + memoizationSolution(points, i, visited | (1 << i), path);
+        if(distance < path[point][visited])
+            path[point][visited] = distance;
     }
 
-    return state[pos][visited];
+    return path[point][visited];
 }
 
 
 vector<vector<double>> createGraph (Instance &instance) {
-		vector<vector<double>> matrix (instance.n + 1 ,vector<double>(instance.n + 1));
+		vector<vector<double>> matrix (instance.n + 1,vector<double>(instance.n + 1));
 		for (int i = 0; i < instance.n + 1; i++) {
 			for (int j = 0; j < instance.n + 1; j++) {
 				// Create fake value that connects start to end with distance 0
