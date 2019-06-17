@@ -3,7 +3,7 @@ import cv2
 
 def halft_ordenado(img):
 	(row, col) = img.shape
-	img = np.floor((10/255) * img)
+	img = np.floor((9/255) * img)
 	img_out = np.zeros((row * 3, col *3))
 
 	mask = np.array([[6, 8, 4],
@@ -18,6 +18,7 @@ def halft_ordenado(img):
 	return img_out
 
 def halft_floyd_steinberg(img, alternating=True):
+	img = img.astype(np.float32)
 	(row, col) = img.shape
 	tmp = np.zeros((row, col))
 	for i in range(0, row - 1):
@@ -30,10 +31,21 @@ def halft_floyd_steinberg(img, alternating=True):
 			else:
 				tmp [i, j] = 1
 			erro = img[i, j] - tmp [i, j] * 255
-			img[i +1, j] = img[i+1, j] + (7/16) * erro
-			img[i-1, j+1] = img[i-1, j+1] + (3/16) * erro
-			img[i, j+1] = img[i, j+1] + (5/16) * erro
-			img[i+1, j+1] = img[i+1, j+1] + (1/16) * erro
+			if not alternating:
+				img[i+1, j] = img[i+1, j] + (7/16) * erro
+				img[i-1, j+1] = img[i-1, j+1] + (3/16) * erro
+				img[i, j+1] = img[i, j+1] + (5/16) * erro
+				img[i+1, j+1] = img[i+1, j+1] + (1/16) * erro
+			if i%2 != 0 and alternating:
+				img[i +1, j] = img[i+1, j] + (7/16) * erro
+				img[i-1, j+1] = img[i-1, j+1] + (3/16) * erro
+				img[i, j+1] = img[i, j+1] + (5/16) * erro
+				img[i+1, j+1] = img[i+1, j+1] + (1/16) * erro
+			if i%2 == 0 and alternating:				
+				img[i-1, j] = img[i-1, j] + (7/16) * erro
+				img[i+1, j-1] = img[i+1, j-1] + (3/16) * erro
+				img[i, j-1] = img[i, j-1] + (5/16) * erro
+				img[i-1, j-1] = img[i-1, j-1] + (1/16) * erro
 	return tmp
 
 images = ['baboon', 'fiducial', 'monarch', 'peppers', 'retina', 'sonnet', 'wedge']
