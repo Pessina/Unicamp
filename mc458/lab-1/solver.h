@@ -17,5 +17,5 @@ double getDistance(Point p1, Point p2);
 vector<int> solveBottomUp(Instance &instance, int timelimit, chrono::high_resolution_clock::time_point &started);
 vector<int> solveTopDown(Instance &instance, int timelimit, chrono::high_resolution_clock::time_point &started);
 vector<vector<double>> createGraph (Instance &instance);
-double memoizationSolution(const vector<vector<double>>& points, int point, int mask, vector<vector<double>>& path);
+double memoizationSolution(const vector<vector<double>>& points, int point, string notVisited, map<string, vector<tuple<double, int>>>& path);
 #endif // SOLVER_H
