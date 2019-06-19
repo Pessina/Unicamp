@@ -224,7 +224,9 @@ bool findString (string s, int number) {
 // Remove um número de uma string
 string removeString (string s, int number) {
 	string element = to_string(number);
-	s.erase(remove(s.begin(), s.end(), element[0]), s.end());
+  int pos = s.find(element);
+  s.erase(s.begin() + pos);
+	// s.erase(remove(s.begin(), s.end(), element[0]), s.end());
 
 	return s;
 }
