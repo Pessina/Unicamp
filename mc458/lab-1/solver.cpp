@@ -87,10 +87,9 @@ string removeString (string s, int number) {
 vector<int> splitString(string str) {
   vector<int> arr;
 
-  for (char number : str) {
-    int element = number;
-    cout << element << endl;
-    // arr.push_back(element);
+  for (int i = 0; i < str.size(); i++) {
+    int n = (int) str[i] - 48;
+    arr.push_back(n);
   }
 
 	return arr;
@@ -113,8 +112,6 @@ vector<int> recreatePath (map<string, vector<tuple<double, int>>>& path, string 
 }
 
 vector<int> solveBottomUp(Instance &instance, int timelimit, chrono::high_resolution_clock::time_point &started){
-	vector<int> sol;
-
 	// Create all path subsets
 	vector<int> sequence(instance.n + 1);
 	iota(begin(sequence), end(sequence), 0);
@@ -129,31 +126,33 @@ vector<int> solveBottomUp(Instance &instance, int timelimit, chrono::high_resolu
 
 	// Initialize graph and visited points
 	vector<vector<double>> points = createGraph(instance);
-	printMatrix(points);
 
+  // Sort the subsets, to solve small before big problems
 	compare c;
 	sort(subsets.begin(), subsets.end(), c);
 
 	for (string subset : subsets) {
 		for (int i = 0; i < points.size(); i++) {
+      // Don't call if the element is in the subset
 			if(!findString(subset, i)) {
 				tuple<double, int>& tuplePos = path.at(subset)[i];
 
 				vector<int> splited;
 				splited = splitString(subset);
 
+        // Initialize base cases
 				if (subset.size() == 1) {
 					get<0>(tuplePos) = points[i][splited[0]] + points[splited[0]][0];
 					get<1>(tuplePos) = splited[0];
 				}
+        // Find the minimun path based on the formula below
+        // g(i, S) = min {Cik + g(k, S - {k})}
 				else {
 					double minimun = MAX_DISTANCE;
 					int bestPos;
 					for (int nextPos : splited) {
 						string nextSequence = removeString(subset, nextPos);
 						double distance =  points[i][nextPos] + get<0>(path.at(nextSequence)[nextPos]);
-						std::cout << "from " << i << " to " << nextPos << "\t\t";
-						std::cout << distance << '\n';
 						if (distance < minimun) {
 							minimun = distance;
 							get<0>(tuplePos) = distance;
@@ -165,7 +164,10 @@ vector<int> solveBottomUp(Instance &instance, int timelimit, chrono::high_resolu
 		}
 	}
 
-	cout << get<0>(path.at(subsets[subsets.size()-1])[0]) << endl;
+  // Recreates the best path
+  vector<int> bestPath;
+  bestPath = recreatePath(path, subsets[subsets.size()-1], 0);
+  bestPath.pop_back();
 
 	// for(int i = 1; i < instance.n - 1; i++){
 	// 	sol.push_back(i);
@@ -179,7 +181,7 @@ vector<int> solveBottomUp(Instance &instance, int timelimit, chrono::high_resolu
 	// 	}
 	// }
 
-	return sol;
+	return bestPath;
 }
 
 vector<int> solveTopDown(Instance &instance, int timelimit, chrono::high_resolution_clock::time_point &started){
@@ -211,8 +213,6 @@ vector<int> solveTopDown(Instance &instance, int timelimit, chrono::high_resolut
 	bestPath = recreatePath(path, sequenceStr, 0);
 	bestPath.pop_back();
 
-	// g(i, S) = min {Cik + g(k, S - {k})}
-
 	return bestPath;
 }
 
@@ -233,6 +233,8 @@ double memoizationSolution(const vector<vector<double>>& points, int point, stri
         if(i == point || !findString(notVisited, i))
             continue;
 
+        // Find the minimun path based on the formula below
+        // g(i, S) = min {Cik + g(k, S - {k})}
 				string newNotVisited =  removeString(notVisited, i);
         double distance = points[point][i] + memoizationSolution(points, i, newNotVisited, path);
         if(distance < get<0>(pointTuple)){
