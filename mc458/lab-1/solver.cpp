@@ -1,5 +1,4 @@
 #include "solver.h"
-#define VISITED -1
 #define MAX_DISTANCE 2000000000
 
 struct compare {
@@ -204,10 +203,7 @@ map<string, vector<tuple<double, int>>> createMap (vector<string> subsets, int s
 	map<string, vector<tuple<double, int>>> dictionary;
 
 	for (string subset : subsets) {
-		vector<tuple<double, int>> tuples (size);
-		for (tuple<double, int>& element : tuples) {
-			element = {MAX_DISTANCE, -1};
-		}
+		vector<tuple<double, int>> tuples (size, tuple<double, int> {MAX_DISTANCE, -1});
 		dictionary.insert({subset, tuples});
 	}
 
