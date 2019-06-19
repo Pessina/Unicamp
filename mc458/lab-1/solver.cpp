@@ -84,25 +84,16 @@ string removeString (string s, int number) {
 	return s;
 }
 
-vector<int> splitString(string str)
-{
-		vector<int> arr;
-    stringstream ss;
-  	ss << str;
+vector<int> splitString(string str) {
+  vector<int> arr;
 
-    /* Running loop till the end of the stream */
-    string temp;
-    int found;
-    while (!ss.eof()) {
-      	ss >> temp;
+  for (char number : str) {
+    int element = number;
+    cout << element << endl;
+    // arr.push_back(element);
+  }
 
-				if (stringstream(temp) >> found)
-					arr.push_back(found);
-
-        temp = "";
-    }
-
-		return arr;
+	return arr;
 }
 // Use the map objetct to recustruct the best path
 vector<int> recreatePath (map<string, vector<tuple<double, int>>>& path, string sequence, int pos) {
@@ -161,7 +152,7 @@ vector<int> solveBottomUp(Instance &instance, int timelimit, chrono::high_resolu
 					for (int nextPos : splited) {
 						string nextSequence = removeString(subset, nextPos);
 						double distance =  points[i][nextPos] + get<0>(path.at(nextSequence)[nextPos]);
-						std::cout << "from " << i << " to " << splited[nextPos] << "\t\t";
+						std::cout << "from " << i << " to " << nextPos << "\t\t";
 						std::cout << distance << '\n';
 						if (distance < minimun) {
 							minimun = distance;
