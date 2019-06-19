@@ -16,7 +16,7 @@ vector<int> solveBottomUp(Instance &instance, int timelimit, chrono::high_resolu
 	subsets = findSubSets(sequence);
 
   // Cria a estrutura usada na memoização
-	map<string, vector<tuple<double, int>>> path;
+	unordered_map<string, vector<tuple<double, int>>> path;
 	path = createMap(subsets, instance.n + 1);
 
   // Inicizaliza o grafo, na forma de uma matriz de adjacência
@@ -83,12 +83,13 @@ vector<int> solveTopDown(Instance &instance, int timelimit, chrono::high_resolut
 	subsets = findSubSets(sequence);
 
   // Cria a estrutura de memoização
-	map<string, vector<tuple<double, int>>> path;
+	unordered_map<string, vector<tuple<double, int>>> path;
 	path = createMap(subsets, instance.n + 1);
 
   // Inicizaliza o grafo na forma de matriz de adjacência e os pontos visitados
 	vector<vector<double>> points = createGraph(instance);
 	ostringstream visited;
+  // Cria uma string com os elementos do vetor
 	copy(sequence.begin(), sequence.end(), ostream_iterator<int>(visited, ""));
 	string sequenceStr = visited.str().c_str();
 
@@ -105,13 +106,13 @@ vector<int> solveTopDown(Instance &instance, int timelimit, chrono::high_resolut
 	return bestPath;
 }
 
-double memoizationSolution(const vector<vector<double>>& points, int point, string notVisited, map<string, vector<tuple<double, int>>>& path) {
-
-		tuple<double, int>& pointTuple = path.at(notVisited)[point];
+double memoizationSolution(const vector<vector<double>>& points, int point, string notVisited, unordered_map<string, vector<tuple<double, int>>>& path) {
 
     // Se visitou todos os pontos, apenas retorna ao início
     if(notVisited == "")
         return points[point][0];
+
+    tuple<double, int>& pointTuple = path.at(notVisited)[point];
 
     // Se o valor na estiver na memoização apenas retorna o valor
     if(get<0>(pointTuple) != MAX_DISTANCE)
@@ -120,7 +121,7 @@ double memoizationSolution(const vector<vector<double>>& points, int point, stri
     // Encontra o menor caminho baseado na seguinte recorrência
     // g(i, S) = min {Cik + g(k, S - {k})}
     // i: ponto inicial. k: próximo ponto. S: conjunto de pontos não visitados. Cik: custo do ponto i para k
-    for(int i = 0; i < points.size(); ++i) {
+    for(int i = 1; i < points.size(); i++) {
         if(i == point || !findString(notVisited, i))
             continue;
 
@@ -199,8 +200,8 @@ vector<string> findSubSets(vector<int> arr) {
 
 // Cria a estrutura de dados usada em nossa resolução do problema, a chave é uma string que representa os pontos que não foram visitados
 // O valor da chave, é um vetor com p posições, onde p é o número de pontos. Cada posição do vetor armazena a menor distância e o próximo ponto que minimiza o caminhos
-map<string, vector<tuple<double, int>>> createMap (vector<string> subsets, int size) {
-	map<string, vector<tuple<double, int>>> dictionary;
+unordered_map<string, vector<tuple<double, int>>> createMap (vector<string> subsets, int size) {
+	unordered_map<string, vector<tuple<double, int>>> dictionary;
 
 	for (string subset : subsets) {
 		vector<tuple<double, int>> tuples (size, tuple<double, int> {MAX_DISTANCE, -1});
@@ -212,10 +213,8 @@ map<string, vector<tuple<double, int>>> createMap (vector<string> subsets, int s
 
 // Verifica se o número está contido na string
 bool findString (string s, int number) {
-	ostringstream aux;
-	aux << number;
-	string element = aux.str();
-	if (s.find(element) != string::npos) {
+	string element = to_string(number);
+	if (s.find_first_of(element) != string::npos) {
 		return true;
 	}else {
 		return false;
@@ -224,9 +223,7 @@ bool findString (string s, int number) {
 
 // Remove um número de uma string
 string removeString (string s, int number) {
-	ostringstream aux;
-	aux << number;
-	string element = aux.str();
+	string element = to_string(number);
 	s.erase(remove(s.begin(), s.end(), element[0]), s.end());
 
 	return s;
@@ -245,7 +242,7 @@ vector<int> splitString(string str) {
 }
 
 // Reconstrói o melhor caminho, dada a estrutura de memoização
-vector<int> recreatePath (map<string, vector<tuple<double, int>>>& path, string sequence, int pos) {
+vector<int> recreatePath (unordered_map<string, vector<tuple<double, int>>>& path, string sequence, int pos) {
 	vector<int> bestPath;
 
 	if (sequence == "") {
