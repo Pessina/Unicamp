@@ -52,13 +52,16 @@ vector<int> solveBottomUp(Instance &instance, int timelimit, chrono::high_resolu
 							get<1>(tuplePos) = nextPos;
 						}
 					}
-			}
-		}
-	}
+  			}
+  		}
+  	}
 
   vector<int> bestPath;
   bestPath = recreatePath(path, subsets[subsets.size()-1], 0);
+  // Remover elementos duplicados na saída
   bestPath.pop_back();
+  bestPath.pop_back();
+  bestPath.erase(bestPath.begin());
 
 	// for(int i = 1; i < instance.n - 1; i++){
 	// 	sol.push_back(i);
@@ -101,7 +104,10 @@ vector<int> solveTopDown(Instance &instance, int timelimit, chrono::high_resolut
 
 	vector<int> bestPath;
 	bestPath = recreatePath(path, sequenceStr, 0);
+  // Remover elementos duplicados na saída
 	bestPath.pop_back();
+  bestPath.pop_back();
+  bestPath.erase(bestPath.begin());
 
 	return bestPath;
 }
